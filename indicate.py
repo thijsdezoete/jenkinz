@@ -197,8 +197,8 @@ class Indicatr(object):
 
         self.change_icon(self.top_icon, self.favicon.icons[icon])
 
-    def add_icon_to_menu(self, icon_name, text, callback):
-        return self.menu.addAction(self.favicon.icons[icon_name], text, callback)
+    def add_icon_to_menu(self, icon, text, callback):
+        return self.menu.addAction(icon, text, callback)
 
     def add_to_menu(self, text, callback):
         return self.menu.addAction(text, callback)
