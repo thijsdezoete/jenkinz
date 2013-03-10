@@ -8,12 +8,12 @@ Usage:
 from setuptools import setup
 
 APP = ['jenkins.py']
-DATA_FILES = []
+DATA_FILES = ['images']
 OPTIONS = {'argv_emulation': False,
     'includes': ['indicate'],
     'excludes': ['QtDeclarative', 'QtHelp']
     # 'ISBackgroundOnly': True
-}
+    }
 
 setup(
     app=APP,

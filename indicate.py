@@ -15,8 +15,6 @@ from urlparse import urlparse
 class Favicon(object):
     def __init__(self):
         self.storage_cache = os.path.abspath(os.path.dirname(__file__) + '/img_cache')
-        # print 'storage cache:'
-        # print self.storage_cache
         self.icons = {}
         self.icon_pm = {}
 
@@ -36,20 +34,8 @@ class Favicon(object):
 
     def _get_remote(self, name):
         url = urlparse(name).path
-        # print url
-        # url = name
-
-        # if 'http://' in url:
-        #     url = url[6:]
-        # print 'Get favicon from %s' % url
         icon_url = "http://www.google.com/s2/favicons?domain="
-
-        #icon_url = "http://g.etfv.co/"
         icon = requests.get(icon_url + url)
-        # print icon_url + url
-        # print icon.headers
-
-        icon_file = self.storage_cache + '/favicon-%s.ico' % name
 
         return icon.content
 
@@ -59,27 +45,21 @@ class Favicon(object):
         pm = QtGui.QPixmap(32, 32)
         pm.loadFromData(dataBuffer)
         self.icon_pm[name] = pm
-        # print self.icon_pm[name].getSize()
         self.icons[name] = QtGui.QIcon(self.icon_pm[name])
+
         return name
 
     def get(self, name):
         icon = self._get_local(name)
         if not icon:
             icon = self._get_remote(name)
-
             dataBuffer = QtCore.QByteArray(icon)
             pm = QtGui.QPixmap(32, 32)
             pm.loadFromData(dataBuffer)
             self._icon_pixmap = pm
-            if not pm:
-                print '---- NO PIXMAP!!!!! ----'
             self.icons[name] = QtGui.QIcon(pm)
 
         return name
-
-    def put(self, name):
-        pass
 
 
 class SetupTrayWindow(QtGui.QDialog):
@@ -99,7 +79,6 @@ class SetupTrayWindow(QtGui.QDialog):
 
     def read_icon_into_qicon(self, icon_file):
         dataBuffer = QtCore.QByteArray(icon_file)
-        #new_icon = QtGui.QImage(dataBuffer)
         pm = QtGui.QPixmap(32, 32)
         pm.loadFromData(dataBuffer)
         self._icon_pixmap = pm
@@ -144,7 +123,7 @@ class SetupTrayWindow(QtGui.QDialog):
         if not 'http' in url:
             url = 'http://' + url
         print 'Get favicon from %s' % url
-        #icon_url = "http://www.google.com/s2/favicons?domain="
+
 
         icon_url = "http://g.etfv.co/"
         icon = requests.get(icon_url + url)
@@ -233,10 +212,10 @@ class Indicatr(object):
         try:
             import AppKit
             # https://developer.apple.com/library/mac/#documentation/AppKit/Reference/NSRunningApplication_Class/Reference/Reference.html
-            NSApplicationActivationPolicyRegular = 0
+            # NSApplicationActivationPolicyRegular = 0
             NSApplicationActivationPolicyAccessory = 1
-            NSApplicationActivationPolicyProhibited = 2
-            AppKit.NSApp.setActivationPolicy_(NSApplicationActivationPolicyProhibited)
+            # NSApplicationActivationPolicyProhibited = 2
+            AppKit.NSApp.setActivationPolicy_(NSApplicationActivationPolicyAccessory)
         except:
             # Don't do anything if we can't remove dock icon...
             print 'Cant remove icon from dock. Install pyobjc to fix this'
