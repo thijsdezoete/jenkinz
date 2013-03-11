@@ -11,11 +11,13 @@ from math import floor as math_floor
 class JenkinsConfig(object):
     def __init__(self, parent=None):
         self.parent = parent
-        self.url = 'http://da115.priv.spillgroup.org:8080'
-        self.icon_map = ['red', 'green', 'blue', 'grey']
-        self.icon_happy_map = {'red': 1, 'grey': 2, 'green': 3, 'blue': 4}
-        self.mapped_states = {'blue_anime': 'blue', 'red_anime': 'red'}
-        self.refresh_rate = 15
+        self.url = 'http://localhost'
+        self.icon_map = ['red', 'green', 'blue', 'grey', 'rain']
+
+        self.score_map = {20: 'red', 40: 'rain', 60: 'grey', 80: 'green', 100: 'blue'}
+        self.reverse_score_map = {'red': 20, 'rain': 40, 'grey': 60, 'green': 80, 'blue': 100}
+
+        self.refresh_rate = 60
         self.micro_rate = self.calc_refresh_rate()
 
     def calc_refresh_rate(self):
@@ -60,7 +62,7 @@ class Jenkins(object):
 
     def init_icons(self):
         for name in self.config.icon_map:
-            self.icons[name] = QtGui.QIcon(os.path.abspath('images/weather_%s' % name))
+            self.icons[name] = QtGui.QIcon(os.path.abspath('images/health_%s' % name))
 
     def set_url(self, url):
         self.config.set_url(url)
@@ -68,14 +70,17 @@ class Jenkins(object):
     def click_link(self, link):
         os.system('open %s' % link)
 
-    def process_item(self, item, url, img):
+    def process_item(self, item, url, img, long_text=None):
         image = self.icons[img]
+        if not long_text:
+            long_text = item
 
-        self.parent.add_icon_to_menu(
+        action = self.parent.add_icon_to_menu(
             image,
             item,
             lambda: self.click_link(url)
         )
+        action.setToolTip(long_text)
 
     def show_config_window(self):
         self.jenkinswindow.show()
@@ -87,41 +92,49 @@ class Jenkins(object):
         self.parent.add_to_menu('Configure...', self.show_config_window)
 
     def dertermine_top_icon(self):
-        self._happiness = 0
+        if not self.items:
+            return
+
         total = 0
         for i, item in enumerate(self.items):
-            total += self.config.icon_happy_map[self.items[item]]
+            total += self.config.reverse_score_map[self.items[item]]
 
         end = int(math_floor(total / i))
-        icon = [key for key, val in self.config.icon_happy_map.iteritems() if val == end][0]
-
-        self._change_top(icon)
+        icon = end / 20 * 20
+        self._change_top(self.config.score_map[icon])
 
     def renew_entries(self):
         self.parent.reset_menu()
+
         self.add_config_btn()
-        # self.add_refresh_btn()
         self.parent.add_separator()
+
         self.get_projects()
         self.parent.add_separator()
 
         self.parent.add_quit_btn()
-        self.dertermine_top_icon()
 
+        self.dertermine_top_icon()
         self.refresh_timer.start(self.config.get_refresh_rate())
 
     def get_projects(self):
         self.items = {}
-        json_url = '{0}/api/json?'.format(self.config.url)
-        posts = requests.get(json_url).json()
+        try:
+            json_url = '{0}/api/json?depth=1'.format(self.config.url)
+            posts = requests.get(json_url).json()
+        except Exception:
+            posts = {'jobs': []}
         for post in posts['jobs']:
-            (name, url, img) = (str(post['name']), str(post['url']), str(post['color']))
-            if img in self.config.mapped_states:
-                name = name + ' - BUILDING'
-                img = self.config.mapped_states[img]
-            self.items[name] = img
+            try:
+                img = self.config.score_map[post['healthReport'][0]['score']]
+                descr = post['healthReport'][0]['description']
+                name = str(post['name'])
+                url = str(post['url'])
+                self.items[name] = img
+            except IndexError:
+                continue
 
-            self.process_item(name, url, img)
+            self.process_item(name, url, img, descr)
 
     def run(self):
         self.parent.reset_menu()
