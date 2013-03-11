@@ -12,7 +12,7 @@ class JenkinsConfig(object):
     def __init__(self, parent=None):
         self.parent = parent
         self.url = 'http://localhost'
-        self.icon_map = ['red', 'green', 'blue', 'grey', 'rain']
+        self.icon_map = ['red', 'green', 'blue', 'grey', 'rain', 'default']
 
         self.score_map = {20: 'red', 40: 'rain', 60: 'grey', 80: 'green', 100: 'blue'}
         self.reverse_score_map = {'red': 20, 'rain': 40, 'grey': 60, 'green': 80, 'blue': 100}
@@ -49,7 +49,7 @@ class Jenkins(object):
         self.jenkinswindow = gui.JenkinsConfigWindow(parent=self.config)
         self.init_icons()
         self.refresh_timer = QtCore.QTimer()
-        self._top_icon = 'blue'
+        self._top_icon = 'default'
         self.parent.change_icon(self.parent.top_icon, self.icons[self._top_icon])
         QtCore.QObject.connect(self.refresh_timer, QtCore.SIGNAL("timeout()"), self.renew_entries)
 
@@ -93,6 +93,8 @@ class Jenkins(object):
 
     def dertermine_top_icon(self):
         if not self.items:
+            self._change_top('default')
+            print 'default topicon'
             return
 
         total = 0
