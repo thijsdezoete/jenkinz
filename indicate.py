@@ -4,6 +4,11 @@ from PyQt4 import QtCore
 from PyQt4 import QtGui
 import requests
 from urlparse import urlparse
+try:
+    import AppKit as ak
+except:
+    ak = None
+    pass
 
 
 # if 'linux' in platform:
@@ -209,17 +214,13 @@ class Indicatr(object):
         self.app.exec_()
 
     def hide_mac_dock_icon(self):
-        try:
-            import AppKit
-            # https://developer.apple.com/library/mac/#documentation/AppKit/Reference/NSRunningApplication_Class/Reference/Reference.html
-            # NSApplicationActivationPolicyRegular = 0
-            NSApplicationActivationPolicyAccessory = 1
-            # NSApplicationActivationPolicyProhibited = 2
-            AppKit.NSApp.setActivationPolicy_(NSApplicationActivationPolicyAccessory)
-        except:
-            # Don't do anything if we can't remove dock icon...
-            # print 'Cant remove icon from dock. Install pyobjc to fix this'
-            pass
+        if not ak:
+            return
+        # https://developer.apple.com/library/mac/#documentation/AppKit/Reference/NSRunningApplication_Class/Reference/Reference.html
+        # NSApplicationActivationPolicyRegular = 0
+        NSApplicationActivationPolicyAccessory = 1
+        # NSApplicationActivationPolicyProhibited = 2
+        ak.NSApp.setActivationPolicy_(NSApplicationActivationPolicyAccessory)
 
 if __name__ == '__main__':
     x = Indicatr()

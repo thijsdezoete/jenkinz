@@ -15,7 +15,7 @@ class JenkinsConfig(object):
         self.url = 'http://localhost'
         self.icon_map = ['red', 'green', 'blue', 'grey', 'rain', 'default']
 
-        self.score_map = {20: 'red', 40: 'rain', 60: 'grey', 80: 'green', 100: 'blue', 0: 'default', 'default': 'default'}
+        self.score_map = {20: 'red', 40: 'rain', 60: 'grey', 80: 'green', 100: 'blue', 0: 'red', 'default': 'default'}
         self.reverse_score_map = {'red': 20, 'rain': 40, 'grey': 60, 'green': 80, 'blue': 100, 'default': 'default'}
 
         self.refresh_rate = 60
@@ -85,6 +85,7 @@ class Jenkins(object):
 
     def show_config_window(self):
         self.jenkinswindow.show()
+        self.jenkinswindow.raise_()
 
     def add_refresh_btn(self):
         self.parent.add_to_menu('Refresh now', self.renew_entries)

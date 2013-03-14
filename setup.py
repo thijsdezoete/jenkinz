@@ -10,7 +10,7 @@ from setuptools import setup
 APP = ['run.py']
 DATA_FILES = ['images']
 OPTIONS = {'argv_emulation': False,
-    'includes': ['indicate'],
+    'includes': ['indicate', 'AppKit'],
     'excludes': [
         'PyQt4.QtDeclarative',
         'PyQt4.QtHelp',
@@ -26,7 +26,12 @@ OPTIONS = {'argv_emulation': False,
         'PyQt4.QtWebKit',
         'PyQt4.QtXml',
         'PyQt4.QtXmlPatterns',
-        ]
+        ],
+        'plist': {
+            'LSUIElement': True,
+            'CFBundleName':'Jenkinz',
+            'CFBundleDisplayName': 'Jenkinz'
+            }
     # 'ISBackgroundOnly': True
     }
 
