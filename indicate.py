@@ -218,7 +218,7 @@ class Indicatr(object):
             AppKit.NSApp.setActivationPolicy_(NSApplicationActivationPolicyAccessory)
         except:
             # Don't do anything if we can't remove dock icon...
-            print 'Cant remove icon from dock. Install pyobjc to fix this'
+            # print 'Cant remove icon from dock. Install pyobjc to fix this'
             pass
 
 if __name__ == '__main__':

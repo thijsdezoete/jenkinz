@@ -11,6 +11,7 @@ class JenkinsConfigWindow(QtGui.QDialog):
         self.url = QtGui.QLineEdit(self.parent.url)
         refresh_rate_text = str(self.parent.refresh_rate)
         self.refresh_rate = QtGui.QLineEdit(refresh_rate_text)
+        QtCore.QObject.connect(self.url, QtCore.SIGNAL('returnPressed()'), self.submit_form)
 
         self.buttonLayout.addWidget(QtGui.QLabel('Jenkins url'))
         self.buttonLayout.addWidget(self.url)

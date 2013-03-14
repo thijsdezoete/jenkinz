@@ -1,5 +1,6 @@
 import requests
 import indicate
+import types
 
 import os
 import gui
@@ -14,8 +15,8 @@ class JenkinsConfig(object):
         self.url = 'http://localhost'
         self.icon_map = ['red', 'green', 'blue', 'grey', 'rain', 'default']
 
-        self.score_map = {20: 'red', 40: 'rain', 60: 'grey', 80: 'green', 100: 'blue'}
-        self.reverse_score_map = {'red': 20, 'rain': 40, 'grey': 60, 'green': 80, 'blue': 100}
+        self.score_map = {20: 'red', 40: 'rain', 60: 'grey', 80: 'green', 100: 'blue', 0: 'default', 'default': 'default'}
+        self.reverse_score_map = {'red': 20, 'rain': 40, 'grey': 60, 'green': 80, 'blue': 100, 'default': 'default'}
 
         self.refresh_rate = 60
         self.micro_rate = self.calc_refresh_rate()
@@ -94,11 +95,12 @@ class Jenkins(object):
     def dertermine_top_icon(self):
         if not self.items:
             self._change_top('default')
-            print 'default topicon'
             return
 
         total = 0
         for i, item in enumerate(self.items):
+            if 'default' is self.config.reverse_score_map[self.items[item]]:
+                continue
             total += self.config.reverse_score_map[self.items[item]]
 
         end = int(math_floor(total / i))
@@ -128,8 +130,12 @@ class Jenkins(object):
             posts = {'jobs': []}
         for post in posts['jobs']:
             try:
-                img = self.config.score_map[post['healthReport'][0]['score']]
-                descr = post['healthReport'][0]['description']
+                for report in post['healthReport']:
+                    if not str(report['description']).startswith('Build stability'):
+                        continue
+
+                    img = self.config.score_map[report['score']]
+                    descr = str(report['description'])
                 name = str(post['name'])
                 url = str(post['url'])
                 self.items[name] = img
