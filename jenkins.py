@@ -13,7 +13,9 @@ import version
 class JenkinsConfig(object):
     def __init__(self, parent=None):
         self.parent = parent
-        self.url = 'http://localhost'
+        self._url_flag_read = 0
+        if not self.read_last_url():
+            self.url = 'http://localhost'
         self.icon_map = ['red', 'green', 'blue', 'grey', 'rain', 'default']
 
         self.score_map = {20: 'red', 40: 'rain', 60: 'grey', 80: 'green', 100: 'blue', 0: 'red', 'default': 'default'}
@@ -25,8 +27,22 @@ class JenkinsConfig(object):
     def calc_refresh_rate(self):
         return self.refresh_rate * 1000
 
+    def needs_configuration(self):
+        return True if self._url_flag_read is 0 else False
+    def read_last_url(self):
+        try:
+            with open('url.txt', 'r') as f:
+                test= f.read()
+            self.url = test
+            self._url_flag_read = 1
+            return test
+        except IOError:
+            return None
+
     def set_url(self, url):
         self.url = url
+        with open('url.txt', 'w') as f:
+            f.write(url)
 
     def set_refresh_rate(self, rate):
         self.refresh_rate = int(rate)
@@ -166,7 +182,8 @@ class Jenkins(object):
             self.handle_post(post)
 
     def run(self):
-        self.show_config_window()
+        if self.config.needs_configuration():
+            self.show_config_window()
         self.parent.reset_menu()
         self.renew_entries()
         self.parent.run()

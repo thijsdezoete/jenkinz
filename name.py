@@ -1,1 +1,1 @@
-NAME='tdzjenkinz'
+NAME='jenkinz'
