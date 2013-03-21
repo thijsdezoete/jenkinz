@@ -8,7 +8,7 @@ import sys
 
 if getattr(sys, 'frozen', False):
     try:
-        app = esky.Esky(sys.executable, 'http://localhost:8000')
+        app = esky.Esky(sys.executable, 'http://traypi.com/secret/')
         app.auto_update()
     except Exception as e:
         print 'Error updating!!!', e
