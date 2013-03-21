@@ -35,38 +35,3 @@ class JenkinsConfigWindow(QtGui.QDialog):
         self.parent.set_refresh_rate(self.refresh_rate.text())
         self.parent.refresh_now()
 
-
-class LoginWindow(QtGui.QDialog):
-    def __init__(self, parent=None):
-        super(LoginWindow, self).__init__()
-        self.parent = parent
-        self.setWindowTitle('New subreddit to follow')
-        self.buttonLayout = QtGui.QVBoxLayout()
-        self.username = QtGui.QLineEdit("username")
-        self.password = QtGui.QLineEdit()
-        # Display password as password
-        self.password.setEchoMode(QtGui.QLineEdit.Password)
-
-        self.buttonBox = QtGui.QGroupBox("Credentials")
-
-        self.buttonLayout.addWidget(self.username)
-        self.buttonLayout.addWidget(self.password)
-        self.buttonBox.setLayout(self.buttonLayout)
-
-        self.confirm = QtGui.QPushButton("&Confirm")
-        self.confirm.clicked.connect(self.submit_form)
-
-        self.username.setFocus()
-        self.username.selectAll()
-
-        self.buttonLayout.addWidget(self.confirm)
-        self.setLayout(self.buttonLayout)
-
-    def submit_form(self):
-        username = str(self.username.text())
-        password = str(self.password.text())
-        print 'Login information saved.'
-        self.close()
-        self.parent.set_session_details(username, password)
-
-

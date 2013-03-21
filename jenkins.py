@@ -7,6 +7,7 @@ import gui
 from PyQt4 import QtCore
 from PyQt4 import QtGui
 from math import floor as math_floor
+import version
 
 
 class JenkinsConfig(object):
@@ -54,6 +55,18 @@ class Jenkins(object):
         self.parent.change_icon(self.parent.top_icon, self.icons[self._top_icon])
         QtCore.QObject.connect(self.refresh_timer, QtCore.SIGNAL("timeout()"), self.renew_entries)
 
+    def show_config_window(self):
+        self.jenkinswindow.show()
+        self.jenkinswindow.raise_()
+
+    def add_refresh_btn(self):
+        self.parent.add_to_menu('Refresh now', self.renew_entries)
+
+    def add_about_btn(self):
+        self.parent.add_to_menu('Version: %s' % version.VERSION, self.renew_entries)
+
+    def add_config_btn(self):
+        self.parent.add_to_menu('Configure...', self.show_config_window)
     def _change_top(self, icon_name):
         if icon_name == self._top_icon:
             return
@@ -82,16 +95,8 @@ class Jenkins(object):
             lambda: self.click_link(url)
         )
         action.setToolTip(long_text)
+        return action
 
-    def show_config_window(self):
-        self.jenkinswindow.show()
-        self.jenkinswindow.raise_()
-
-    def add_refresh_btn(self):
-        self.parent.add_to_menu('Refresh now', self.renew_entries)
-
-    def add_config_btn(self):
-        self.parent.add_to_menu('Configure...', self.show_config_window)
 
     def dertermine_top_icon(self):
         if not self.items:
@@ -110,8 +115,9 @@ class Jenkins(object):
 
     def renew_entries(self):
         self.parent.reset_menu()
-
+        
         self.add_config_btn()
+        self.add_about_btn()
         self.parent.add_separator()
 
         self.get_projects()
@@ -122,6 +128,32 @@ class Jenkins(object):
         self.dertermine_top_icon()
         self.refresh_timer.start(self.config.get_refresh_rate())
 
+    def round_for_map(self, number):
+        _t = number / 20 * 20
+        return _t
+
+    def handle_jenkins_report(self, report, post):
+        score = self.round_for_map(report['score'])
+        img = self.config.score_map[score]
+        url = str(post['url'])
+        name = str(post['name'])
+
+        self.items[name] = img
+
+        descr = str(report['description'])
+
+        return self.process_item(name, url, img, descr)
+
+    def handle_post(self, post):
+        x = [self.handle_jenkins_report(b, post) for \
+                b in post['healthReport'] \
+                if str(b['description']).startswith('Build stability')\
+            ]
+        if len(x) < 1:
+            return None
+
+        return x[0]
+
     def get_projects(self):
         self.items = {}
         try:
@@ -129,23 +161,12 @@ class Jenkins(object):
             posts = requests.get(json_url).json()
         except Exception:
             posts = {'jobs': []}
+
         for post in posts['jobs']:
-            try:
-                for report in post['healthReport']:
-                    if not str(report['description']).startswith('Build stability'):
-                        continue
-
-                    img = self.config.score_map[report['score']]
-                    descr = str(report['description'])
-                name = str(post['name'])
-                url = str(post['url'])
-                self.items[name] = img
-            except IndexError:
-                continue
-
-            self.process_item(name, url, img, descr)
+            self.handle_post(post)
 
     def run(self):
+        self.show_config_window()
         self.parent.reset_menu()
         self.renew_entries()
         self.parent.run()

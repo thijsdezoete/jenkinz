@@ -5,12 +5,48 @@ Usage:
     python setup.py py2app
 """
 
+from esky import bdist_esky
 from setuptools import setup
+from version import VERSION
+from name import NAME
 
+
+#APP = bdist_esky.Executable(['run.py'])
+#NAME = 'fabrc'
 APP = ['run.py']
 DATA_FILES = ['images']
-OPTIONS = {'argv_emulation': False,
-    'includes': ['indicate', 'AppKit'],
+OPTIONS = { 'bdist_esky': {
+    'freezer_module': 'py2app',
+    'freezer_options': {
+        'argv_emulation': False,
+        'app': APP,
+        'scripts': APP,
+        'data_files': DATA_FILES,
+        'plist': {
+            'LSUIElement': True,
+            'CFBundleName':NAME,
+            'CFBundleDisplayName': NAME,
+            # 'ISBackgroundOnly': True
+            },
+        #'includes': ['indicate', 'AppKit', 'PyQt4.QtGui', 'PyQt4.QtCore'],
+        #'includes': ['PyQt4.QtCore'],
+        'excludes': [
+            'PyQt4.QtDeclarative',
+            'PyQt4.QtHelp',
+            'PyQt4.QtDesigner',
+            'PyQt4.QtMultimedia',
+            'PyQt4.QtNetwork',
+            'PyQt4.QtOpenGL',
+            'PyQt4.QtScript',
+            'PyQt4.QtScriptTools',
+            'PyQt4.QtSql',
+            'PyQt4.QtSvg',
+            'PyQt4.QtTest',
+            'PyQt4.QtWebKit',
+            'PyQt4.QtXml',
+            'PyQt4.QtXmlPatterns',
+            ],
+    },
     'excludes': [
         'PyQt4.QtDeclarative',
         'PyQt4.QtHelp',
@@ -27,17 +63,17 @@ OPTIONS = {'argv_emulation': False,
         'PyQt4.QtXml',
         'PyQt4.QtXmlPatterns',
         ],
-        'plist': {
-            'LSUIElement': True,
-            'CFBundleName':'Jenkinz',
-            'CFBundleDisplayName': 'Jenkinz'
-            }
-    # 'ISBackgroundOnly': True
     }
+}
+
 
 setup(
-    app=APP,
-    data_files=DATA_FILES,
-    options={'py2app': OPTIONS},
-    setup_requires=['py2app'],
+    #app=APP,
+    scripts=APP,
+    version=VERSION,
+    name=NAME,
+    options=OPTIONS,
+    #data_files=['images'],
+    #**OPTIONS['bdist_esky']['freezer_options']
+    #setup_requires=['py2app'],
 )
