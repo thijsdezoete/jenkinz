@@ -57,9 +57,19 @@ def put_nib_in_place(file_name):
     ts.close()
     return dist_path
 
-def go(args=None):
+def rebuild():
+    local('python setup.py bdist_esky')
+    file_name = fabric.operations.prompt('Copy the weird buildname plx: ')
+    print 
+    print 'was it: %s' % file_name
+    print
+    zip_file = put_nib_in_place(file_name)
+    print 'All done!! Uploading time!'
+
+
+def go(version='patch'):
     # Increment release number in version.py
-    increment_release()
+    increment_release(version)
 
     # Build package
     local('python setup.py bdist_esky')

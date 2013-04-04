@@ -40,7 +40,7 @@ class Favicon(object):
     def _get_remote(self, name):
         url = urlparse(name).path
         icon_url = "http://www.google.com/s2/favicons?domain="
-        icon = requests.get(icon_url + url)
+        icon = requests.get(icon_url + url, verify=False)
 
         return icon.content
 
