@@ -3,8 +3,15 @@ import qtray as indicate
 
 import os
 import gui
-from PyQt4 import QtCore
-from PyQt4 import QtGui
+try: 
+    from PyQt4 import QtCore
+    from PyQt4 import QtGui
+except ImportError:
+    try:
+        from Qt import (QtCore, QtGui)
+    except Exception, e:
+        raise e
+
 from math import floor as math_floor
 import version
 

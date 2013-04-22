@@ -6,28 +6,87 @@ Usage:
 """
 
 from esky import bdist_esky
-from setuptools import setup
 from version import VERSION
 from name import NAME
+import sys
 
-
-#APP = bdist_esky.Executable(['run.py'])
-#NAME = 'fabrc'
 APP = ['run.py']
 DATA_FILES = ['images']
-OPTIONS = { 'bdist_esky': {
-    'freezer_module': 'py2app',
-    'freezer_options': {
-        'argv_emulation': False,
-        'app': APP,
-        'scripts': APP,
-        'data_files': DATA_FILES,
+
+if sys.platform is 'darwin':
+    from setuptools import setup
+    freezer_module = 'py2app'
+    extra_opts = {
         'plist': {
             'LSUIElement': True,
             'CFBundleName':NAME,
             'CFBundleDisplayName': NAME,
             # 'ISBackgroundOnly': True
             },
+            'app': APP,
+            'argv_emulation': False,
+            'data_files': DATA_FILES,
+            'scripts': APP,
+    }
+
+if sys.platform.startswith('linux'):
+    from cx_Freeze import setup
+    freezer_module = 'cx_Freeze'
+    extra_opts = {
+        'include-files': DATA_FILES,
+    }
+
+# OPTS = {'bdist_esky': {
+#     'freezer_module': freezer_module,
+#     'freezer_options': {
+#         'scripts': APP,
+#         'data_files': DATA_FILES,
+#         #'includes': ['indicate', 'AppKit', 'PyQt4.QtGui', 'PyQt4.QtCore'],
+#         #'includes': ['PyQt4.QtCore'],
+#         'excludes': [
+#             'PyQt4.QtDeclarative',
+#             'PyQt4.QtHelp',
+#             'PyQt4.QtDesigner',
+#             'PyQt4.QtMultimedia',
+#             'PyQt4.QtNetwork',
+#             'PyQt4.QtOpenGL',
+#             'PyQt4.QtScript',
+#             'PyQt4.QtScriptTools',
+#             'PyQt4.QtSql',
+#             'PyQt4.QtSvg',
+#             'PyQt4.QtTest',
+#             'PyQt4.QtWebKit',
+#             'PyQt4.QtXml',
+#             'PyQt4.QtXmlPatterns',
+#             ],
+#     },
+#     'excludes': [
+#         'PyQt4.QtDeclarative',
+#         'PyQt4.QtHelp',
+#         'PyQt4.QtDesigner',
+#         'PyQt4.QtMultimedia',
+#         'PyQt4.QtNetwork',
+#         'PyQt4.QtOpenGL',
+#         'PyQt4.QtScript',
+#         'PyQt4.QtScriptTools',
+#         'PyQt4.QtSql',
+#         'PyQt4.QtSvg',
+#         'PyQt4.QtTest',
+#         'PyQt4.QtWebKit',
+#         'PyQt4.QtXml',
+#         'PyQt4.QtXmlPatterns',
+#         ],
+#     }
+# }
+
+#APP = bdist_esky.Executable(['run.py'])
+#NAME = 'fabrc'
+
+OPTIONS = {'bdist_esky': {
+    'freezer_module': freezer_module,
+    'freezer_options': {
+        #'scripts': APP,
+        #'data_files': DATA_FILES,
         #'includes': ['indicate', 'AppKit', 'PyQt4.QtGui', 'PyQt4.QtCore'],
         #'includes': ['PyQt4.QtCore'],
         'excludes': [
@@ -45,6 +104,11 @@ OPTIONS = { 'bdist_esky': {
             'PyQt4.QtWebKit',
             'PyQt4.QtXml',
             'PyQt4.QtXmlPatterns',
+            'PySide.QtCore',
+            'PySide.QtGui',
+            'PySide.QtNetwork',
+            'PySide.QtUiTools',
+            'PySide.QtWebKit',
             ],
     },
     'excludes': [
@@ -62,10 +126,16 @@ OPTIONS = { 'bdist_esky': {
         'PyQt4.QtWebKit',
         'PyQt4.QtXml',
         'PyQt4.QtXmlPatterns',
+        'PySide.QtCore',
+        'PySide.QtGui',
+        'PySide.QtNetwork',
+        'PySide.QtUiTools',
+        'PySide.QtWebKit',
         ],
     }
 }
 
+OPTIONS['bdist_esky']['freezer_options'].update(extra_opts)
 
 setup(
     #app=APP,

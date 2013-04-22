@@ -6,9 +6,11 @@ from version import VERSION
 from name import NAME
 import zipfile
 import os
+import sys
 
 env.hosts = ['seastar']
 env.user = 'thijs'
+
 
 def increment_release(rel_type='patch', new_number=None):
     (major, minor, patch) = VERSION.split('.')
@@ -25,6 +27,10 @@ def increment_release(rel_type='patch', new_number=None):
         f.write("VERSION='%s'" % new_num)
     print 'New version is now: %s' % new_num
     return new_num
+
+def remove_extra_pylib(file_name):
+    dist_path = './dist/%s.zip' % file_name
+    app_name=NAME
 
 def put_nib_in_place(file_name):
     dist_path = './dist/%s.zip' % file_name
@@ -63,7 +69,10 @@ def rebuild():
     print 
     print 'was it: %s' % file_name
     print
-    zip_file = put_nib_in_place(file_name)
+    if sys.platform.startswith('linux'):
+        remove_extra_pylib(file_name)
+    elif sys.platform is 'darwin':
+        zip_file = put_nib_in_place(file_name)
     print 'All done!! Uploading time!'
 
 
@@ -77,6 +86,7 @@ def go(version='patch'):
     print 
     print 'was it: %s' % file_name
     print
+    
     zip_file = put_nib_in_place(file_name)
     print 'All done!! Uploading time!'
     print zip_file

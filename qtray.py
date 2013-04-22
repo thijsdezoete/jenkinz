@@ -1,4 +1,10 @@
-from PyQt4 import QtGui
+try:
+    from PyQt4 import QtGui
+except ImportError:
+    try:
+        from Qt import QtGui
+    except Exception, e:
+        raise e
 
 try:
     import AppKit as ak

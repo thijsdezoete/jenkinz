@@ -1,5 +1,15 @@
-from PyQt4 import QtGui
-from PyQt4 import QtCore
+try: 
+    from PyQt4 import QtCore
+    from PyQt4 import QtGui
+except ImportError:
+    try:
+        from Qt import QtCore
+        from Qt import QtGui
+        print dir(QtGui)
+    except Exception, e:
+        raise e
+#from PyQt4 import QtGui
+#from PyQt4 import QtCore
 
 
 class JenkinsConfigWindow(QtGui.QDialog):
