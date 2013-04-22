@@ -44,6 +44,7 @@ class JenkinsConfig(object):
 
         self.refresh_rate = 60
         self.micro_rate = self.calc_refresh_rate()
+        self.timeout = 5
 
     def calc_refresh_rate(self):
         return self.refresh_rate * 1000
@@ -225,7 +226,7 @@ class Jenkins(object):
         self.items = {}
         try:
             json_url = '{0}/api/json?tree=jobs[name,url,color,healthReport[description,score,iconUrl]]'.format(self.config.url)
-            posts = requests.get(json_url).json()
+            posts = requests.get(json_url, timeout=self.config.timeout).json()
         except Exception:
             posts = {'jobs': []}
 
