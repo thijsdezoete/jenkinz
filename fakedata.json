@@ -1,0 +1,34 @@
+{"jobs": [
+    {"name": "blah",
+    "url": "http://localhost/something",
+    "color": "red",
+    "healthReport": [
+        {
+            "description": "Build stability",
+            "score": 80
+        }
+    ]
+    },
+    {"name": "testing",
+    "url": "http://localhost/something",
+    "color": "grey",
+    "healthReport": [
+        {
+            "description": "Build stability",
+            "score": 50
+        }
+    ]
+    },
+    {"name": "another job",
+    "url": "http://localhost/something",
+    "color": "blue",
+    "healthReport": [
+        {
+            "description": "Build stability",
+            "score": 100
+        }
+    ]
+    }
+]
+}
+

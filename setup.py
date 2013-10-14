@@ -13,20 +13,22 @@ import sys
 APP = ['run.py']
 DATA_FILES = ['images']
 
-if sys.platform is 'darwin':
+if sys.platform == 'darwin':
     from setuptools import setup
     freezer_module = 'py2app'
     extra_opts = {
         'plist': {
             'LSUIElement': True,
-            'CFBundleName':NAME,
+            'CFBundleName': NAME,
             'CFBundleDisplayName': NAME,
+            'NSUserNotificationAlertStyle': 'alert'
             # 'ISBackgroundOnly': True
-            },
-            'app': APP,
-            'argv_emulation': False,
-            'data_files': DATA_FILES,
-            'scripts': APP,
+        },
+        'app': APP,
+        'argv_emulation': False,
+        'data_files': DATA_FILES,
+        'scripts': APP,
+        'iconfile': 'images/jenkinz.icns'
     }
 
 if sys.platform.startswith('linux'):

@@ -2,6 +2,7 @@ import jenkins
 import esky
 import sys
 
+
 if getattr(sys, 'frozen', False):
     try:
         app = esky.Esky(sys.executable, 'http://traypi.com/secret/')
@@ -9,9 +10,6 @@ if getattr(sys, 'frozen', False):
         app.auto_update()
     except Exception as e:
         print 'Error updating!!!', e
-else:
-    print 'vanilla run'
 
 r = jenkins.Jenkins()
 r.run()
-

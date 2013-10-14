@@ -113,3 +113,8 @@ def deploy(dist_name):
     upload_dir = '/opt/domains/traypi.com/uploads/'
     with cd(upload_dir):
         put(dist_name, upload_dir, mode=644)
+
+def publish_site():
+    site_dir = '/opt/domains/traypi.com/www/'
+    with cd(site_dir):
+        put('website/*', site_dir)
