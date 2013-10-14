@@ -32,13 +32,13 @@ import version
 DEBUG = False
 PROJECT_LINK = "http://www.traypi.com"
 INSTALL_STARTUP_APP_CMD = """
-osascript<<END
-tell application "Finder"
-    set thePath to (POSIX path of (path to application "jenkinz"))
-end tell
-tell application "System Events"
-    make login item at end with properties {path:thePath, name:"jenkinz", hidden:true}
-end tell
+osascript<<END\n
+tell application "Finder"\n
+\tset thePath to (POSIX path of (path to application "jenkinz"))\n
+end tell\n
+tell application "System Events"\n
+\tmake login item at end with properties {path:thePath, name:"jenkinz", hidden:true}\n
+end tell\n
 END
 """
 
@@ -270,7 +270,10 @@ class Jenkins(object):
         self._change_top(self.config.score_map[icon])
 
     def add_to_startup(self):
-        os.system(INSTALL_STARTUP_APP_CMD)
+        import subprocess
+        x = subprocess.call(INSTALL_STARTUP_APP_CMD, shell=True)
+        # os.system(INSTALL_STARTUP_APP_CMD)
+
         z = QMessageBox()
         z.setText("All done. I'll start the next time you reboot!")
         z.exec_()
@@ -279,7 +282,7 @@ class Jenkins(object):
         # These entries go in the submenu
         self.parent.add_to_settings('&About', lambda: self.click_link(PROJECT_LINK))
         self.parent.add_to_settings('&Configure', self.show_config_window)
-        self.parent.add_to_settings('&Add to Startup programs', self.add_to_startup)
+        # self.parent.add_to_settings('&Add to Startup programs', self.add_to_startup)
         self.parent.add_to_settings('Version: %s' % version.VERSION, self.renew_entries)
         self.parent.add_settings_separator()
         self.parent.add_to_settings('Quit', self._quit)
