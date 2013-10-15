@@ -4,6 +4,7 @@ esky==0.9.8dev
 py2app==0.7.3
 pycrypto==2.6
 python-qt==0.50
+requests
 virtualenv==1.8.4
 virtualenv-clone==0.2.4
 virtualenvwrapper==3.6
