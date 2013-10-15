@@ -1,6 +1,6 @@
 Fabric==1.6.0
 distribute==0.6.34
-esky==0.9.8dev
+esky==0.9.8
 py2app==0.7.3
 pycrypto==2.6
 python-qt==0.50
