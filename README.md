@@ -10,3 +10,6 @@ Running goes like so
 Afterwards:
 
 ```python run.py```
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/thijsdezoete/jenkinz/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
